@@ -14,6 +14,7 @@ from intel_owl import tasks, settings
 from django.utils import timezone
 from django.db import transaction
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,7 +41,7 @@ def start_analyzers(analyzers_to_execute, analyzers_config, job_id, md5, is_samp
             # run analyzer with a celery task asynchronously
             if is_sample:
                 # check if we should run the hash instead of the binary
-                run_hash = analyzers_config[analyzer].get("run_hash", "")
+                run_hash = analyzers_config[analyzer].get("run_hash", False)
                 if run_hash:
                     # check which kind of hash the analyzer needs
                     run_hash_type = analyzers_config[analyzer].get(
@@ -171,10 +172,6 @@ def set_report_and_cleanup(job_id, report):
     job_object = None
 
     try:
-        # add process time
-        finished_time = time.time()
-        report["process_time"] = finished_time - report["started_time"]
-
         with transaction.atomic():
             job_object = object_by_job_id(job_id, transaction=True)
             job_object.analysis_reports.append(report)
