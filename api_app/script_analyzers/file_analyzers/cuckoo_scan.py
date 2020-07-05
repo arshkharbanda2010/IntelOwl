@@ -4,13 +4,14 @@ import requests
 import logging
 
 from api_app.exceptions import AnalyzerRunException
-from api_app.script_analyzers import general, classes
+from api_app.script_analyzers import general
+from .base_class import FileAnalyzer
 from intel_owl import secrets
 
 logger = logging.getLogger(__name__)
 
 
-class CuckooAnalysis(classes.FileAnalyzer):
+class CuckooAnalysis(FileAnalyzer):
     def set_config(self, additional_config_params):
         # cuckoo installation can be with or without the api_token
         # it depends on version and configuration
